@@ -10,7 +10,7 @@ exports.register = async (req, res) => {
     const { Lname, name,password,tel,role } = req.body;
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ Lname, password: hashedPassword,name,tel,role });
+        const user = new User({ Lname, password: hashedPassword,name,tel, });
         await user.save();
         res.status(201).send("User registered");
     } catch (err) {
@@ -26,8 +26,7 @@ exports.login = async (req, res) => {
         if (!tmpuser) return res.status(400).send("User not found");
         const isMatch = await bcrypt.compare(password, tmpuser.password);
         if (!isMatch) return res.status(400).send("Invalid credentials");
-        const role = await(tmpuser.role);
-        if (!role) return res.status(400).send("Role not found");
+
 
         const accessToken = jwt.sign(
             { userId: tmpuser._id },
@@ -40,7 +39,7 @@ exports.login = async (req, res) => {
             process.env.REFRESH_TOKEN_SECRET
         );
 
-        res.json({ user: tmpuser, accessToken, refreshToken ,role});
+        res.json({ user: tmpuser, accessToken, refreshToken ,});
     } catch (err) {
         res.status(500).send(err.message);
     }
